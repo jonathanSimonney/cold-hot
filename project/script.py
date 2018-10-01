@@ -23,10 +23,11 @@ class SteelPlate:
         return ret
 
     def draw_picture(self):
-        pyp.clf()
         pyp.imshow(self.get_inner_grid(), origin="upper", extent=[0, self.x_dim - 2, 0, self.y_dim - 2],
-                   interpolation="bilinear")
+                   interpolation="nearest")
         pyp.draw()
+        pyp.pause(2)
+        pyp.clf()
         pyp.axis('off')
 
     def change_temp_inside_once(self):
@@ -36,8 +37,8 @@ class SteelPlate:
         for x in range(self.x_dim):
             for y in range(self.y_dim):
                 if not self._coords_are_on_side(x, y):
-                    new_value = (self.grid[x - 1, y] + self.grid[x + 1, y] + self.grid[x, y + 1] + self.grid[x, y - 1] +
-                                 self.grid[x, y]) / 5
+                    new_value = (self.grid[x - 1, y] + self.grid[x + 1, y] + self.grid[x, y + 1] + self.grid[x, y - 1])\
+                                / 4
                     future_grid[x, y] = new_value
 
                     candidate_delta = new_value - self.grid[x, y]
@@ -48,11 +49,15 @@ class SteelPlate:
 
     def change_temp_inside_until_max_delta_is_reached(self, max_delta):
         current_delta = self.change_temp_inside_once()
+        number_iter = 0
         while current_delta > max_delta:
+            number_iter += 1
             current_delta = self.change_temp_inside_once()
             print(current_delta)
-            self.draw_picture()
-            pyp.pause(1)
+            if number_iter == 50:
+                number_iter = 0
+                self.draw_picture()
+                print("hey")
         self.draw_picture()
 
     def change_temp_outside(self, x, y, temp):
@@ -65,13 +70,16 @@ class SteelPlate:
         return x == 0 or x + 1 == self.x_dim or y == 0 or y + 1 == self.y_dim
 
 
-steel_plate = SteelPlate(1000, 1000, 25, 13)
+x_dim = 40
+y_dim = 40
+steel_plate = SteelPlate(x_dim, y_dim, 25, 13)
 
 steel_plate.change_temp_outside(0, 1, 0)
 steel_plate.change_temp_outside(1, 0, 0)
-steel_plate.change_temp_outside(1001, 1000, 1000)
-steel_plate.change_temp_outside(1000, 1001, 1000)
+steel_plate.change_temp_outside(x_dim + 1, y_dim, 1000)
+steel_plate.change_temp_outside(x_dim, y_dim + 1, 1000)
 steel_plate.change_temp_inside_once()
 
-steel_plate.change_temp_inside_until_max_delta_is_reached(0.1)
+steel_plate.change_temp_inside_until_max_delta_is_reached(0.000000000001)
+pyp.show()
 
