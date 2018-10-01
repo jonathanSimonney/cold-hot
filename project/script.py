@@ -65,17 +65,13 @@ class SteelPlate:
         return x == 0 or x + 1 == self.x_dim or y == 0 or y + 1 == self.y_dim
 
 
-steel_plate = SteelPlate(4, 4, 25, 13)
-pyp.show()
+steel_plate = SteelPlate(1000, 1000, 25, 13)
 
-print(steel_plate.grid)
 steel_plate.change_temp_outside(0, 1, 0)
 steel_plate.change_temp_outside(1, 0, 0)
-steel_plate.change_temp_outside(5, 4, 1000)
-steel_plate.change_temp_outside(4, 5, 1000)
+steel_plate.change_temp_outside(1001, 1000, 1000)
+steel_plate.change_temp_outside(1000, 1001, 1000)
 steel_plate.change_temp_inside_once()
-print(steel_plate.grid)
-print(steel_plate.get_inner_grid())
 
 steel_plate.change_temp_inside_until_max_delta_is_reached(0.1)
 
