@@ -3,7 +3,7 @@ import matplotlib.pyplot as pyp
 
 
 class SteelPlate:
-    def __init__(self, x_dim, y_dim, ambiant_temperature, object_temp):
+    def __init__(self, x_dim, y_dim, ambiant_temperature_array, object_temp):
         self.x_dim = x_dim + 2
         self.y_dim = y_dim + 2
 
@@ -11,7 +11,7 @@ class SteelPlate:
         for x in range(self.x_dim):
             for y in range(self.y_dim):
                 if self._coords_are_on_side(x, y):
-                    outer_and_inner_temp[x, y] = ambiant_temperature
+                    outer_and_inner_temp[x, y] = ambiant_temperature_array[x, y]
         self.grid = outer_and_inner_temp
 
     def get_inner_grid(self):
@@ -70,16 +70,12 @@ class SteelPlate:
         return x == 0 or x + 1 == self.x_dim or y == 0 or y + 1 == self.y_dim
 
 
-x_dim = 40
-y_dim = 40
-steel_plate = SteelPlate(x_dim, y_dim, 25, 13)
+x_dim = 400
+y_dim = 400
+steel_plate = SteelPlate(x_dim, y_dim, np.random.randint(1000000, size=(x_dim + 2, y_dim + 2)), 0)
 
-steel_plate.change_temp_outside(0, 1, 0)
-steel_plate.change_temp_outside(1, 0, 0)
-steel_plate.change_temp_outside(x_dim + 1, y_dim, 1000)
-steel_plate.change_temp_outside(x_dim, y_dim + 1, 1000)
 steel_plate.change_temp_inside_once()
 
-steel_plate.change_temp_inside_until_max_delta_is_reached(0.000000000001)
+steel_plate.change_temp_inside_until_max_delta_is_reached(1)
 pyp.show()
 
